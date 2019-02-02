@@ -7,25 +7,30 @@
     <link rel="stylesheet" href="css/styles.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 </head>
-    <body onload="prepare();">
-      <section class="section">
-        <div class="container">
-          <h1 class="title">
-            Solo Service Station
-          </h1>
-        <h3 id="useragent" style="color:gray;"></h3>
-        <h3 id="success" style="color:green;"></h3>
-        <h3 id="errors" style="color:red;"></h3>
-        <h3 id="debug" style="color:purple;"></h3>
-          <p class="subtitle">
-            To check your key, press here, then your key, and allow browser to determine your key.
-          </p>
-          <button onclick="check()" class="button is-primary">Check key</button>
-        </div>
-      </section>
-    </body>
-    <script src="js/cbor.js"></script>
-    <script src="js/platform.js"></script>
-    <script src="js/sha256.min.js"></script>
-    <script src="js/station.js"></script>
+
+<body onload="prepare();">
+  <section class="section">
+	<div class="container">
+	  <h1 class="title">
+		Solo Service Station
+	  </h1>
+	  <h3 id="useragent" style="color:gray;"></h3>
+	  <h3 id="success" style="color:green;"></h3>
+	  <h3 id="errors" style="color:red;"></h3>
+	  <h3 id="fingerprint" style="color:gray;"></h3>
+	  <h3 id="debug" style="color:purple;"></h3>
+	  <p class="subtitle">
+		Press this button to check if your Solo is genuine.
+	  </p>
+	  <button onclick="check()" class="button is-primary">Check key</button>
+	</div>
+  </section>
+</body>
+
+<!-- external, permissive licenses -->
+<script src="js/cbor.js"></script>
+<script src="js/platform.js"></script>
+<script src="js/sha256.js"></script>
+<!-- our stuff -->
+<script src="js/station.js"></script>
 </html>
