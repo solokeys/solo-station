@@ -64,7 +64,8 @@ function check() {
         console.log('X5C', x5c);
 		let fp = sha256(x5c);
 		console.log('FINGERPRINT', fp);
-        document.getElementById('fingerprint').textContent = 'key fingerprint: ' + fp;
+		// looks ugly on mobile:
+        // document.getElementById('fingerprint').textContent = 'key fingerprint: ' + fp;
 
         if (fp === known["solo_secure"]) {
             console.log("THIS IS A SOLO SECURE");
