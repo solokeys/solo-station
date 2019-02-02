@@ -1,0 +1,14 @@
+@charset "utf-8";
+
+@import url('https://fonts.googleapis.com/css?family=Karla');
+
+$family-sans-serif: "Nunito", sans-serif;
+
+$red: #d83a40;
+$mint: #34c39e;
+$blue: #3392e5;
+
+$primary: $blue;
+
+// cut this down later
+@import "../tools/bulma/bulma.sass";
