@@ -1,15 +1,30 @@
+<!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Solo Service Station</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 </head>
-    <body>
-        <h1>Solo Station</h1>
+    <body onload="prepare();">
+      <section class="section">
+        <div class="container">
+          <h1 class="title">
+            Solo Service Station
+          </h1>
+        <h3 id="useragent" style="color:gray;"></h3>
         <h3 id="success" style="color:green;"></h3>
         <h3 id="errors" style="color:red;"></h3>
-
-        <p>To check your key, press here, then your key, and allow browser to determine your key.</p>
-        <button onclick="check()">Check key</button>
-
+        <h3 id="debug" style="color:purple;"></h3>
+          <p class="subtitle">
+            To check your key, press here, then your key, and allow browser to determine your key.
+          </p>
+          <button onclick="check()" class="button is-primary">Check key</button>
+        </div>
+      </section>
     </body>
-    <script src="js/station.js"></script>
     <script src="js/cbor.js"></script>
+    <script src="js/platform.js"></script>
+    <script src="js/station.js"></script>
 </html>
