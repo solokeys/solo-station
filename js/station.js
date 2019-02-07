@@ -2,12 +2,16 @@ function prepare() {
     document.getElementById('success').textContent = '';
     document.getElementById('errors').textContent = '';
     document.getElementById('useragent').textContent = platform.description;
-    if (!window.PublicKeyCredential) {
-        document.getElementById('errors').textContent = 'Your browser does not support WebAuthn';
-        return;
+    if (window.u2f && window.u2f.sign) {
+        document.getElementById('success').textContent += 'Your browser supports U2F. ';
+    } else {
+        document.getElementById('errors').textContent += 'Your browser does not support U2F. ';
     }
-    document.getElementById('success').textContent = 'Your browser supports WebAuthn';
-
+    if (!window.PublicKeyCredential) {
+        document.getElementById('errors').textContent += 'Your browser does not support WebAuthn';
+    } else {
+        document.getElementById('success').textContent += 'Your browser supports WebAuthn';
+    }
 }
 
 function check() {
@@ -55,8 +59,16 @@ function check() {
     let credPromise = navigator.credentials.create(
         {publicKey: makePublicKey}
     ).then(response => {
+        console.log('CREDENTIAL:', response);
         document.getElementById('success').textContent = 'Got a response';
         console.log('PRE-DE-CBOR',response.response.attestationObject);
+
+        const utf8Decoder = new TextDecoder('utf-8');
+        const decodedClientData = utf8Decoder.decode(
+            response.response.clientDataJSON)
+        const clientDataObj = JSON.parse(decodedClientData);
+        console.log('CLIENTDATA', clientDataObj)
+
         var attestation = CBOR.decode(response.response.attestationObject);
         console.log('ATTESTATION', attestation);
         var x5c = attestation.attStmt.x5c[0];
