@@ -1,2 +1,0 @@
-**/*.hex filter=lfs diff=lfs merge=lfs -text
-hex/*.json filter=lfs diff=lfs merge=lfs -text
