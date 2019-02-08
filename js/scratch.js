@@ -197,7 +197,7 @@ async function flash_firmware(file_url) {
     console.log("SIGNED HEX", signed_hex);
 
     let file_reader = new FileReader();
-    file_reader.readAsText(signed_hex);
+    await file_reader.readAsText(signed_hex);
     console.log("FILE READER", file_reader);
     console.log("FILE READER.RESULT", file_reader.result);
 
