@@ -196,12 +196,32 @@ async function flash_firmware(file_url) {
     let signed_hex = await get_url_json(file_url);
     console.log("SIGNED HEX", signed_hex);
 
-    let file_reader = new FileReader();
-    await file_reader.readAsText(signed_hex);
-    console.log("FILE READER", file_reader);
-    console.log("FILE READER.RESULT", file_reader.result);
+    const readFetchedFileAsText = (inputFile) => {
+      const temporaryFileReader = new FileReader();
 
-    content = JSON.parse(file_reader.result);
+      return new Promise((resolve, reject) => {
+        temporaryFileReader.onerror = () => {
+          temporaryFileReader.abort();
+          reject(new DOMException("Problem parsing input file."));
+        };
+
+        temporaryFileReader.onload = () => {
+          resolve(temporaryFileReader.result);
+        };
+        temporaryFileReader.readAsText(inputFile);
+      });
+    };
+
+    var fileContents = await readFetchedFileAsText(signed_hex);
+    // let file_reader = new FileReader();
+    // await wrap_promise(file_reader.readAsText(signed_hex);
+
+    // console.log("FILE READER", file_reader);
+    // console.log("FILE READER.RESULT", file_reader.result);
+    console.log("FILE CONTENTS:", fileContents);
+
+    // content = JSON.parse(file_reader.result);
+    content = JSON.parse(fileContents);
     console.log("CONTENT", content);
     let firmware = websafe2string(content.firmware);
     var signature = websafe2array(content.signature);
