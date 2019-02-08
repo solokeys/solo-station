@@ -185,6 +185,7 @@ async function test_is_bootloader() {
 async function flash_firmware(file_url) {
     // e.g.: "https://genuine.solokeys.com/hex/example-solo.json"
 
+    document.getElementById('flasherror').textContent = '';
     var p = await is_bootloader();
     if (p.status != 'CTAP1_SUCCESS')
     {
