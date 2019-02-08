@@ -189,7 +189,7 @@ async function flash_firmware(file_url) {
     if (p.status != 'CTAP1_SUCCESS')
     {
         console.log("Make sure device is in bootloader mode.  Unplug, hold button, plug in, wait for flashing yellow light.");
-        document.getElementById('flashinfo').textContent = 'Make sure device is in bootloader mode.  Unplug, hold button, plug in, wait for flashing yellow light.';
+        document.getElementById('flasherror').textContent = 'Make sure device is in bootloader mode.  Unplug, hold button, plug in, wait for flashing yellow light.';
         return;
     }
 
@@ -252,22 +252,23 @@ async function flash_firmware(file_url) {
 
             TEST(p.status == 'CTAP1_SUCCESS', 'Device wrote data');
             var progress = (((i/data.length) * 100 * 100) | 0)/100;
-            document.getElementById('flashprogress').textContent = ''+progress+' %';
+            document.getElementById('flashprogress').textContent = ''+progress+'%';
             //console.log("PROGRESS:", progress);
         }
 
         addr = addresses.next();
     }
+    document.getElementById('flashprogress').textContent = '100%';
     console.log("...DONE");
 
     p = await bootloader_reboot_into_app(signature);
     if (p.status != 'CTAP1_SUCCESS') {
         console.log("Firmware image signature denied");
-        document.getElementById('flashinfo').textContent = 'Firmware image signature denied';
+        document.getElementById('flasherror').textContent = 'Firmware image signature denied';
     }
     else {
         console.log("Update successful");
-        document.getElementById('flashinfo').textContent = 'Update successful';
+        document.getElementById('flashsuccess').textContent = 'Update successful';
     }
 
 }
