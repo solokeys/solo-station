@@ -41,7 +41,7 @@ async function prepare_flash() {
 async function flash_firmware(file_url) {
     // e.g.: "https://genuine.solokeys.com/hex/example-solo.json"
 
-    await prepare_flash();
+    // await prepare_flash();
 
     let signed_hex = await get_url_json(file_url);
     console.log("SIGNED HEX", signed_hex);
@@ -102,6 +102,7 @@ async function flash_firmware(file_url) {
             var chunk = data.slice(i,i+chunk_size);
             console.log('ADDR ',addr.value + i);
             if (use_webauthn) {
+                console.log("ATTEMPTING U2F OVER WEBAUTHN");
                 p = await u2f_over_webauthn(
                     CMD.boot_write,
                     addr.value + i,
