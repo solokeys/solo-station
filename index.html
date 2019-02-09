@@ -37,8 +37,8 @@
 	  <h3 id="flasherror" style="color:red;"></h3>
 	  <p class="subtitle">
       Yo yo, don't do this at home.<br>
-      This will only work on <a href="https://genuine.solokeys.com/hex/example-signed-hacker-all.hex">example-signed-hacker-all.hex</a>,
-      but once you flash that, you are stuck with firmware signed with this (unofficial) key <a href="https://genuine.solokeys.com/hex/example-signing-key.pem">example-signing-key.pem</a>!
+      This will only work on Solo Hacker keys that either don't check for signatures, or check for firmware signed with this (unofficial) key <a href="https://genuine.solokeys.com/hex/example-signing-key.pem">example-signing-key.pem</a>!<br>Here is a build of the bootloader+firmware combo that uses this unofficial key in the bootloader check: <a href="https://genuine.solokeys.com/hex/example-signed-hacker-all.hex">example-signed-hacker-all.hex</a>.<br>
+      But! Once you flash that, you are stuck with firmware signed with the key, currently this process is irreversible.
 	  </p>
 	  <button onclick="flash_firmware('hex/example-solo.json')" class="button is-primary">Flash firmware</button>
 	</div>
