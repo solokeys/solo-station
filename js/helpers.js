@@ -72,3 +72,31 @@ function websafe2string(string) {
     return window.atob(normal64(string));
 }
 
+function wrap_promise(func) {
+    var self = this;
+    return function() {
+        var args = arguments;
+        return new Promise(function(resolve, reject) {
+           var i;
+           var oldfunc = null;
+           for (i = 0; i < args.length; i++) {
+               if (typeof args[i] == 'function') {
+                   oldfunc = args[i];
+                   args[i] = function() {
+                       oldfunc.apply(self, arguments);
+                       resolve.apply(self, arguments);
+                   };
+                   break;
+               }
+           }
+           if (oldfunc === null) {
+               args = Array.prototype.slice.call(args);
+               args.push(function() {
+                   resolve.apply(self, arguments);
+               })
+               func.apply(self, args);
+           }
+        });
+    }
+}
+

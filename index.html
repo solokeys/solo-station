@@ -8,7 +8,7 @@
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 </head>
 
-<body onload="prepare();">
+<body onload="prepare_genuine(); prepare_flash();">
   <section class="section">
 	<div class="container">
       <p><a href="https://github.com/solokeys/solo-station"><img src="images/github.png" height=32 width=32>github.com/solokeys/solo-station</a></p>
@@ -54,6 +54,11 @@
 <!-- our stuff -->
 <script src="js/constants.js"></script>
 <script src="js/helpers.js"></script>
-<script src="js/scratch.js"></script>
-<script src="js/station.js"></script>
+
+<script src="js/ctap1.js"></script>
+<script src="js/flash_ctap1.js"></script>
+
+<script src="js/update.js"></script>
+
+<script src="js/genuine.js"></script>
 </html>

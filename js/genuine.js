@@ -1,4 +1,4 @@
-function prepare() {
+function prepare_genuine() {
     document.getElementById('success').textContent = '';
     document.getElementById('errors').textContent = '';
     document.getElementById('useragent').textContent = platform.description;
