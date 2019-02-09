@@ -1,29 +1,32 @@
-async function test_mapping_ctap2_to_ctap1() {
-    var boot_check_array  = new Uint8Array([
-        66, 0, 0, 0, 140, 39, 144, 246, 0,
-        16,
-        65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65
-    ]);
+async function u2f_over_webauthn(cmd, addr, data) {
+    // if a token does not support CTAP2, WebAuthn re-encodes as CTAP1/U2F:
+    // https://fidoalliance.org/specs/fido-v2.0-rd-20170927/fido-client-to-authenticator-protocol-v2.0-rd-20170927.html#interoperating-with-ctap1-u2f-authenticators
+    //
+    // the bootloader only supports CTAP1, so the idea is to drop
+    // u2f-api.js and the Firefox about:config fiddling
+    //
+    // problem: the popup to press button flashes up briefly :(
+    //
 
-    var challenge = new Uint8Array(32);
-    window.crypto.getRandomValues(challenge);
+    var u2f_cmd_as_keyhandle = encode_ctap1_request_as_keyhandle(cmd, addr, data);
+    var challenge = window.crypto.getRandomValues(new Uint8Array(32));
 
     var request_options = {
         challenge: challenge,
         allowCredentials: [{
-            id: boot_check_array,
+            id: u2f_cmd_as_keyhandle,
             type: 'public-key',
         }],
-        timeout: 60000,
+        timeout: 5000,
     }
 
-    for (i = 0; i < 10; i++) {
-        await navigator.credentials.get({publicKey: request_options});
-    }
+    return await navigator.credentials.get({publicKey: request_options});
 }
 
 async function prepare_flash() {
-    await test_mapping_ctap2_to_ctap1();
+    // for (i = 0; i < 10; i++) {
+    //     await u2f_over_webauthn(CMD.boot_check);
+    // }
 
     document.getElementById('flasherror').textContent = '';
     var p = await is_bootloader();
@@ -89,15 +92,26 @@ async function flash_firmware(file_url) {
     let addr = addresses.next();
     let chunk_size = 240;
     console.log("WRITING...");
+
+    var use_webauthn = true;
+
     while(!addr.done) {
         var data = blocks.get(addr.value);
         var i;
         for (i = 0; i < data.length; i += chunk_size) {
             var chunk = data.slice(i,i+chunk_size);
             console.log('ADDR ',addr.value + i);
-            p = await bootloader_write(addr.value + i, chunk);
+            if (use_webauthn) {
+                p = await u2f_over_webauthn(
+                    CMD.boot_write,
+                    addr.value + i,
+                    chunk
+                );
+            } else {
+                p = await bootloader_write(addr.value + i, chunk);
+                TEST(p.status == 'CTAP1_SUCCESS', 'Device wrote data');
+            }
 
-            TEST(p.status == 'CTAP1_SUCCESS', 'Device wrote data');
             var progress = (((i/data.length) * 100 * 100) | 0)/100;
             document.getElementById('flashprogress').textContent = ''+progress+'%';
             //console.log("PROGRESS:", progress);
@@ -108,14 +122,20 @@ async function flash_firmware(file_url) {
     document.getElementById('flashprogress').textContent = '100%';
     console.log("...DONE");
 
-    p = await bootloader_reboot_into_app(signature);
-    if (p.status != 'CTAP1_SUCCESS') {
-        console.log("Firmware image signature denied");
-        document.getElementById('flasherror').textContent = 'Firmware image signature denied';
-    }
-    else {
-        console.log("Update successful");
-        document.getElementById('flashsuccess').textContent = 'Update successful';
+    if (use_webauthn) {
+        p = await u2f_over_webauthn(
+                CMD.boot_done, 0x8000, signature
+        );
+    } else {
+        p = await bootloader_reboot_into_app(signature);
+        if (p.status != 'CTAP1_SUCCESS') {
+            console.log("Firmware image signature denied");
+            document.getElementById('flasherror').textContent = 'Firmware image signature denied';
+        }
+        else {
+            console.log("Update successful");
+            document.getElementById('flashsuccess').textContent = 'Update successful';
+        }
     }
 
 }

@@ -7,11 +7,11 @@ const CMD = {
     rng: 0x15,
     pubkey: 0x16,
 
-    boot_write: 0x40,
-    boot_done: 0x41,
-    boot_check: 0x42,
-    boot_erase: 0x43,
-    boot_version: 0x44,
+    boot_write: 0x40,   // 64
+    boot_done: 0x41,    // 65
+    boot_check: 0x42,   // 66
+    boot_erase: 0x43,   // 67
+    boot_version: 0x44, // 68
 };
 
 const ctap_error_codes = {
