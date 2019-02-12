@@ -1,12 +1,17 @@
 function prepare_genuine() {
     document.getElementById('success').textContent = '';
     document.getElementById('errors').textContent = '';
+    document.getElementById('debug').textContent = '';
     document.getElementById('useragent').textContent = platform.description;
-    if (window.u2f && window.u2f.sign) {
-        document.getElementById('success').textContent += 'Your browser supports U2F. ';
-    } else {
-        document.getElementById('errors').textContent += 'Your browser does not support U2F. ';
-    }
+    // Misleading: It's (probably) not the browser that does not support U2F.
+    // But: without including u2f-api.js, Chrome has no easy window.u2f.sign interface
+    // Similarly, without the about:config dance, Firefox does not have it either
+    // We want to stay future-proof, and use the WebAuthn credentials interface throughout
+    // if (window.u2f && window.u2f.sign) {
+    //     document.getElementById('success').textContent += 'Your browser supports U2F. ';
+    // } else {
+    //     document.getElementById('errors').textContent += 'Your browser does not support U2F. ';
+    // }
     if (!window.PublicKeyCredential) {
         document.getElementById('errors').textContent += 'Your browser does not support WebAuthn';
     } else {
@@ -15,6 +20,8 @@ function prepare_genuine() {
 }
 
 function check() {
+    prepare_genuine();
+
     // random nonce
     var challenge = new Uint8Array(32);
     window.crypto.getRandomValues(challenge);

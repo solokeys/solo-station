@@ -17,6 +17,7 @@ async function u2f_over_webauthn(cmd, addr, data) {
             id: u2f_cmd_as_keyhandle,
             type: 'public-key',
         }],
+        userVerification: "discouraged",
         timeout: 5000,
     }
 
