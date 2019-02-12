@@ -1,5 +1,6 @@
 function prepare_genuine() {
     document.getElementById('success').textContent = '';
+    document.getElementById('success-version').textContent = '';
     document.getElementById('errors').textContent = '';
     document.getElementById('debug').textContent = '';
     document.getElementById('useragent').textContent = platform.description;
@@ -17,6 +18,43 @@ function prepare_genuine() {
     } else {
         document.getElementById('success').textContent += 'Your browser supports WebAuthn';
     }
+}
+
+async function check_version(){
+    document.getElementById('errors').textContent = 'Checking firmware version, please wait...';
+    document.getElementById('success-version').textContent = '';
+    version = await get_version();
+    console.log(version);
+        document.getElementById('errors').textContent = '';
+    if (version.errorCode)
+    {
+        document.getElementById('errors').textContent = 'Your firmware is out of date.  Please update.';
+    }
+    else if (version.status != 'CTAP1_SUCCESS')
+    {
+        document.getElementById('errors').textContent = 'Error: ' + version.status;
+    }
+    else
+    {
+        s = version.data[0] + '.' + version.data[1]
+        if (version.data[0] == 1 && version.data[1] == 0)
+        {
+            document.getElementById('success-version').textContent = 'Firmware is up to date: ' + s + '.';
+        }
+        else
+        {
+            document.getElementById('success').textContent += '.  Version: ' + s;
+            document.getElementById('errors').textContent = 'Your firmware is out of date.  Please update.';
+        }
+
+        rng = await get_rng();
+        console.log(rng);
+        s = 'Here are some secure random bytes from Solo: ' + array2hex(rng.data);
+        document.getElementById('fingerprint').textContent = s;
+    }
+
+
+
 }
 
 function check() {
@@ -99,6 +137,9 @@ function check() {
             console.log("UNKNOWN ATTESTATION");
             document.getElementById('errors').textContent = 'unknown key';
         }
+
+        check_version();
+
     })
     .catch(e => {
         console.log(e);
