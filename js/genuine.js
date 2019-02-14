@@ -52,9 +52,6 @@ async function check_version(){
         s = 'Here are some secure random bytes from Solo: ' + array2hex(rng.data);
         document.getElementById('fingerprint').textContent = s;
     }
-
-
-
 }
 
 function check() {

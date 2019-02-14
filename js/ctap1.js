@@ -2,7 +2,7 @@ function parse_device_response(arr)
 {
     var dataview = new DataView(arr.slice(1,5).buffer);
 
-    count = dataview.getUint32(0, true); // get count as 32 bit LE integer
+    count = dataview.getUint32(0, false); // get count as 32 bit BE integer
 
     data = null;
     if (arr[5] == 0) {
