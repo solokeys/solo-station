@@ -1,7 +1,6 @@
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import ssl
 
-
 # CTAP1/U2F requires serving over https
 https = True
 
@@ -15,8 +14,6 @@ if https:
 else:
     host =('localhost' , 8080)
     httpd = HTTPServer(('localhost', 8080), SimpleHTTPRequestHandler)
-
-
 
 print('serving on ', host)
 httpd.serve_forever()
