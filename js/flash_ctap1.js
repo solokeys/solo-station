@@ -1,4 +1,40 @@
-async function u2f_over_webauthn(cmd, addr, data) {
+function parse_ctaphid_vendor_over_webauthn_response(response)
+{
+    // https://fidoalliance.org/specs/fido-v2.0-rd-20170927/fido-client-to-authenticator-protocol-v2.0-rd-20170927.html#using-the-ctap2-authenticatorgetassertion-command-with-ctap1-u2f-authenticators<Paste>
+	//
+	// compared to `parse_device_response`, the data is encoded a little differently here
+	//
+	// attestation.response.authenticatorData
+	//
+	// first 32 bytes: SHA-256 hash of the rp.id
+	// 1 byte: zeroth bit = user presence set in U2F response (always 1)
+	// last 4 bytes: signature counter (32 bit big-endian)
+	//
+	// attestation.response.signature
+	// signature data (bytes 5-end of U2F response
+
+	signature_count = (
+		new DataView(
+			response.authenticatorData.slice(33, 37)
+		)
+	).getUint32(0, false); // get count as 32 bit BE integer
+
+	signature = new Uint8Array(response.signature);
+    data = null;
+	error_code = signature[0];
+    if (error_code == 0) {
+        data = signature.slice(1, signature.length);
+
+    }
+    return {
+		count: signature_count,
+		status: ctap_error_codes[error_code],
+		data: data,
+		signature: signature,
+    };
+}
+
+async function ctaphid_vendor_over_webauthn(cmd, addr, data) {
     // if a token does not support CTAP2, WebAuthn re-encodes as CTAP1/U2F:
     // https://fidoalliance.org/specs/fido-v2.0-rd-20170927/fido-client-to-authenticator-protocol-v2.0-rd-20170927.html#interoperating-with-ctap1-u2f-authenticators
     //
@@ -21,12 +57,14 @@ async function u2f_over_webauthn(cmd, addr, data) {
         timeout: 5000,
     }
 
-    return await navigator.credentials.get({publicKey: request_options});
+    var assertion = await navigator.credentials.get({publicKey: request_options});
+    return parse_ctaphid_vendor_over_webauthn_response(assertion.response);
+
 }
 
 async function prepare_flash() {
     // for (i = 0; i < 10; i++) {
-    //     await u2f_over_webauthn(CMD.boot_check);
+    //     await ctaphid_vendor_over_webauthn(CMD.boot_check);
     // }
 
     document.getElementById('flasherror').textContent = '';
@@ -104,11 +142,14 @@ async function flash_firmware(file_url) {
             console.log('ADDR ',addr.value + i);
             if (use_webauthn) {
                 console.log("ATTEMPTING U2F OVER WEBAUTHN");
-                p = await u2f_over_webauthn(
+                p = await ctaphid_vendor_over_webauthn(
                     CMD.boot_write,
                     addr.value + i,
                     chunk
                 );
+                // console.log("CMD.boot_write response:", p);
+				// typical response: {count: 10, status: "CTAP1_SUCCESS", data: Uint8Array(0)}
+                TEST(p.status == 'CTAP1_SUCCESS', 'Device wrote data');
             } else {
                 p = await bootloader_write(addr.value + i, chunk);
                 TEST(p.status == 'CTAP1_SUCCESS', 'Device wrote data');
@@ -125,7 +166,7 @@ async function flash_firmware(file_url) {
     console.log("...DONE");
 
     if (use_webauthn) {
-        p = await u2f_over_webauthn(
+        p = await ctaphid_vendor_over_webauthn(
                 CMD.boot_done, 0x8000, signature
         );
     } else {

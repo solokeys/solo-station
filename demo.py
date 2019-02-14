@@ -2,7 +2,7 @@ from http.server import HTTPServer, SimpleHTTPRequestHandler
 import ssl
 
 # CTAP1/U2F requires serving over https
-https = True
+https = False
 
 if https:
     host =('localhost', 4443)

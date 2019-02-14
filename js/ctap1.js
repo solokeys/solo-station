@@ -1,5 +1,10 @@
 function parse_device_response(arr)
 {
+    // https://fidoalliance.org/specs/fido-u2f-v1.2-ps-20170411/fido-u2f-raw-message-formats-v1.2-ps-20170411.html#authentication-response-message-success
+    //
+    // first byte: always 1 :))
+    // bytes 1-4: big-endian counter
+    // X bytes: signature over various things
     var dataview = new DataView(arr.slice(1,5).buffer);
 
     count = dataview.getUint32(0, false); // get count as 32 bit BE integer
