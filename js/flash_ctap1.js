@@ -54,7 +54,7 @@ async function ctaphid_vendor_over_webauthn(cmd, addr, data) {
             type: 'public-key',
         }],
         userVerification: "discouraged",
-        timeout: 5000,
+        timeout: 1000,
     }
 
     var assertion = await navigator.credentials.get({publicKey: request_options});
@@ -68,6 +68,8 @@ async function prepare_flash() {
     // }
 
     document.getElementById('flasherror').textContent = '';
+	let r = await ctaphid_vendor_over_webauthn(CMD.boot_check);
+	/*
     var p = await is_bootloader();
     if (p.status != 'CTAP1_SUCCESS')
     {
@@ -75,6 +77,13 @@ async function prepare_flash() {
         document.getElementById('flasherror').textContent = 'Make sure device is in bootloader mode.  Unplug, hold button, plug in, wait for flashing yellow light.';
         return;
     }
+	*/
+}
+
+async function generate_random() {
+	let r = await ctaphid_vendor_over_webauthn(CMD.rng);
+	let hex_random = array2hex(r.data);
+    document.getElementById('randomdata').textContent = hex_random.slice(64);
 }
 
 async function flash_firmware(file_url) {

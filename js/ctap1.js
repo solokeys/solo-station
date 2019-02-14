@@ -59,6 +59,7 @@ function encode_ctap1_request_as_keyhandle(cmd, addr, data) {
     return array;
 }
 
+/*
 function send_msg_u2f(data, func, timeout) {
     // Use key handle and signature response as comm channel
     var d = new Date();
@@ -97,5 +98,4 @@ function send_msg_u2f(data, func, timeout) {
         timeout
     );
 }
-
-
+*/

@@ -18,40 +18,26 @@ function prepare_genuine() {
     } else {
         document.getElementById('success').textContent += 'Your browser supports WebAuthn';
     }
+	check_version();
 }
 
 async function check_version(){
     document.getElementById('errors').textContent = 'Checking firmware version, please wait...';
     document.getElementById('success-version').textContent = '';
-    version = await get_version();
-    console.log(version);
-        document.getElementById('errors').textContent = '';
-    if (version.errorCode)
-    {
-        document.getElementById('errors').textContent = 'Your firmware is out of date.  Please update.';
-    }
-    else if (version.status != 'CTAP1_SUCCESS')
-    {
-        document.getElementById('errors').textContent = 'Error: ' + version.status;
-    }
-    else
-    {
-        formatted_version = version.data[0] + '.' + version.data[1] + '.' + version.data[2];
-        if (formatted_version == '1.0.2')
-        {
-            document.getElementById('success-version').textContent = 'Firmware is up to date: ' + formatted_version;
-        }
-        else
-        {
-            document.getElementById('success').textContent += '.  Version: ' + formatted_version;
-            document.getElementById('errors').textContent = 'Your firmware is out of date.  Please update.';
-        }
-
-        rng = await get_rng();
-        console.log(rng);
-        s = 'Here are some secure random bytes from Solo: ' + array2hex(rng.data);
-        document.getElementById('fingerprint').textContent = s;
-    }
+	let r = await ctaphid_vendor_over_webauthn(CMD.version);
+	let version_and_noise = r.data;
+    let formatted_version = version_and_noise[0] + '.' + version_and_noise[1] + '.' + version_and_noise[2];
+    console.log(formatted_version);
+	document.getElementById('errors').textContent = '';
+	if (formatted_version == '1.0.2')
+	{
+		document.getElementById('success-version').textContent = 'Firmware is up to date: ' + formatted_version;
+	}
+	else
+	{
+		document.getElementById('success').textContent += '.  Version: ' + formatted_version;
+		document.getElementById('errors').textContent = 'Your firmware is out of date.  Please update.';
+	}
 }
 
 function check() {

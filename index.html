@@ -41,16 +41,27 @@
       This will only work on Solo Hacker keys that either don't check for signatures, or check for firmware signed with this (unofficial) key <a href="https://genuine.solokeys.com/hex/example-signing-key.pem">example-signing-key.pem</a>!<br>Here is a build of the bootloader+firmware combo that uses this unofficial key in the bootloader check: <a href="https://genuine.solokeys.com/hex/example-signed-hacker-all.hex">example-signed-hacker-all.hex</a>.<br>
       But! Once you flash that, you are stuck with firmware signed with the key, currently this process is irreversible.
 	  </p>
-	  <button onclick="flash_firmware('hex/example-solo-1.0.2.json')" class="button is-primary">Flash firmware</button>
+	  <button onclick="flash_firmware('hex/solo-1.0.2-12-gc81bc9f.json')" class="button is-primary">Flash firmware</button>
 	</div>
   </section>
+  <section class="section">
+	<div class="container">
+	  <h1 class="title">
+		Random Data
+	  </h1>
+	  <h3 id="randomdata" style="color:gray;"></h3>
+	  <p class="subtitle">
+		Demo of Solo random number generator
+	  </p>
+	  <button onclick="generate_random()" class="button is-primary">Flash firmware</button>
 </body>
 
 <!-- external, permissive licenses -->
 <script src="js/cbor.js"></script>
 <script src="js/platform.js"></script>
 <script src="js/sha256.js"></script>
-<script src="js/u2f-api.js"></script> <!-- U2F support for Chrome; for Firefox need the about:config dance -->
+<!--<script src="js/u2f-api.js"></script>-->
+ <!-- U2F support for Chrome; for Firefox need the about:config dance -->
 <script src="js/intel-hex.js"></script>
 <!-- our stuff -->
 <script src="js/constants.js"></script>
