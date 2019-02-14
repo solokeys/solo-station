@@ -1,36 +1,36 @@
 function parse_ctaphid_vendor_over_webauthn_response(response)
 {
     // https://fidoalliance.org/specs/fido-v2.0-rd-20170927/fido-client-to-authenticator-protocol-v2.0-rd-20170927.html#using-the-ctap2-authenticatorgetassertion-command-with-ctap1-u2f-authenticators<Paste>
-	//
-	// compared to `parse_device_response`, the data is encoded a little differently here
-	//
-	// attestation.response.authenticatorData
-	//
-	// first 32 bytes: SHA-256 hash of the rp.id
-	// 1 byte: zeroth bit = user presence set in U2F response (always 1)
-	// last 4 bytes: signature counter (32 bit big-endian)
-	//
-	// attestation.response.signature
-	// signature data (bytes 5-end of U2F response
+    //
+    // compared to `parse_device_response`, the data is encoded a little differently here
+    //
+    // attestation.response.authenticatorData
+    //
+    // first 32 bytes: SHA-256 hash of the rp.id
+    // 1 byte: zeroth bit = user presence set in U2F response (always 1)
+    // last 4 bytes: signature counter (32 bit big-endian)
+    //
+    // attestation.response.signature
+    // signature data (bytes 5-end of U2F response
 
-	signature_count = (
-		new DataView(
-			response.authenticatorData.slice(33, 37)
-		)
-	).getUint32(0, false); // get count as 32 bit BE integer
+    signature_count = (
+        new DataView(
+            response.authenticatorData.slice(33, 37)
+        )
+    ).getUint32(0, false); // get count as 32 bit BE integer
 
-	signature = new Uint8Array(response.signature);
+    signature = new Uint8Array(response.signature);
     data = null;
-	error_code = signature[0];
+    error_code = signature[0];
     if (error_code == 0) {
         data = signature.slice(1, signature.length);
 
     }
     return {
-		count: signature_count,
-		status: ctap_error_codes[error_code],
-		data: data,
-		signature: signature,
+        count: signature_count,
+        status: ctap_error_codes[error_code],
+        data: data,
+        signature: signature,
     };
 }
 
@@ -148,7 +148,7 @@ async function flash_firmware(file_url) {
                     chunk
                 );
                 // console.log("CMD.boot_write response:", p);
-				// typical response: {count: 10, status: "CTAP1_SUCCESS", data: Uint8Array(0)}
+                // typical response: {count: 10, status: "CTAP1_SUCCESS", data: Uint8Array(0)}
                 TEST(p.status == 'CTAP1_SUCCESS', 'Device wrote data');
             } else {
                 p = await bootloader_write(addr.value + i, chunk);

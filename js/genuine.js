@@ -36,14 +36,14 @@ async function check_version(){
     }
     else
     {
-        s = version.data[0] + '.' + version.data[1]
-        if (version.data[0] == 1 && version.data[1] == 0)
+        formatted_version = version.data[0] + '.' + version.data[1] + '.' + version.data[2];
+        if (formatted_version == '1.0.2')
         {
-            document.getElementById('success-version').textContent = 'Firmware is up to date: ' + s + '.';
+            document.getElementById('success-version').textContent = 'Firmware is up to date: ' + formatted_version;
         }
         else
         {
-            document.getElementById('success').textContent += '.  Version: ' + s;
+            document.getElementById('success').textContent += '.  Version: ' + formatted_version;
             document.getElementById('errors').textContent = 'Your firmware is out of date.  Please update.';
         }
 

@@ -1,16 +1,18 @@
-var get_rng = wrap_promise(function(func) {
+var get_rng_ = function(func) {
     var req = encode_ctap1_request_as_keyhandle(CMD.rng, 0, 0,);
     send_msg_u2f(req, function(resp){
         // if (func) func(resp);
         console.log('RNG RESP:', resp);
     });
-})
+}
+
+var get_rng = wrap_promise(get_rng_);
 
 var get_version = wrap_promise(function(func) {
     var req = encode_ctap1_request_as_keyhandle(CMD.version);
     send_msg_u2f(req, function(resp){
         if (func) func(resp);
-        // console.log('VERSION RESP:', resp);
+        console.log('VERSION RESP:', resp);
     });
 })
 

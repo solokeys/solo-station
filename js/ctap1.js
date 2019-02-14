@@ -45,10 +45,10 @@ function encode_ctap1_request_as_keyhandle(cmd, addr, data) {
     // to interpret `data` as encoded U2F APDU command,
     // when passed as keyhandle in u2f.sign.
     // yes, there can theoretically be clashes :)
-    array[4] = 0x8C;
-    array[5] = 0x27;
-    array[6] = 0x90;
-    array[7] = 0xf6;
+    array[4] = 0x8C;  // 140
+    array[5] = 0x27;  //  39
+    array[6] = 0x90;  // 144
+    array[7] = 0xf6;  // 246
 
     array[8] = 0;
     array[9] = data.length & 0xff;
@@ -79,13 +79,11 @@ function send_msg_u2f(data, func, timeout) {
     };
 
     window.u2f.sign(appid, chal, [key], function(res) {
-        /*
         if (res.errorCode) {
             console.log('RES.ERRORCODE', res.errorCode);
         } else {
-            */
 
-            //console.log('window.u2f.sign RESPONSE:', res)
+            console.log('window.u2f.sign RESPONSE:', res)
             var d2 = new Date();
             t2 = d2.getTime();
             // console.log('TOOK:', t2 - t1);
@@ -95,8 +93,7 @@ function send_msg_u2f(data, func, timeout) {
             var sig = websafe2array(res.signatureData);
             data = parse_device_response(sig);
             func(data);
-        //}},
-        },
+        }},
         timeout
     );
 }
