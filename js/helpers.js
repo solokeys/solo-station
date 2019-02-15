@@ -1,4 +1,4 @@
-var get_url_json = async function(file_url) {
+async function get_url_json(file_url) {
     let response = await fetch(file_url);
     let data = await response.blob();
     let metadata = {
@@ -28,7 +28,7 @@ function hex2array(string)
     {
         throw new Error('Odd length hex string');
     }
-    var arr = new Uint8Array(string.length/2);
+    let arr = new Uint8Array(string.length/2);
     var i;
     for (i = 0; i < string.length; i+=2)
     {
