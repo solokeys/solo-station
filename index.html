@@ -21,7 +21,7 @@
 	  <h3 id="errors" style="color:red;"></h3>
 	  <h3 id="fingerprint" style="color:gray;"></h3>
 	  <h3 id="debug" style="color:purple;"></h3>
-	  <p class="subtitle">
+	  <p>
 		Press this button to check if your Solo is genuine.
 	  </p>
 	  <button onclick="check()" class="button is-primary">Check key</button>
@@ -36,10 +36,18 @@
 	  <h3 id="flashprogress" style="color:gray;"></h3>
 	  <h3 id="flashsuccess" style="color:green;"></h3>
 	  <h3 id="flasherror" style="color:red;"></h3>
-	  <p class="subtitle">
-      Yo yo, don't do this at home.<br>
-      This will only work on Solo Hacker keys that either don't check for signatures, or check for firmware signed with this (unofficial) key <a href="https://genuine.solokeys.com/hex/example-signing-key.pem">example-signing-key.pem</a>!<br>Here is a build of the bootloader+firmware combo that uses this unofficial key in the bootloader check: <a href="https://genuine.solokeys.com/hex/example-signed-hacker-all.hex">example-signed-hacker-all.hex</a>.<br>
-      But! Once you flash that, you are stuck with firmware signed with the key, currently this process is irreversible.
+      <h2 class="subtitle">
+        THIS IS HIGHLY EXPERIMENTAL AND WORK IN PROGRESS!<br>
+        DO NOT USE FOR SOLO SECURE KEYS!<br>
+      </h2>
+	  <p>
+        This update will only work for
+        <div class="content">
+        <ul>
+          <li> unlocked Solo Hacker keys, or </li>
+          <li> Solo Hacker keys checking for firmware signed with <a href="https://genuine.solokeys.com/hex/example-signing-key.pem">this (unofficial!) verifying key</a></li>
+        </ul>
+        </div>
 	  </p>
 	  <button onclick="flash_firmware('hex/solo-1.0.2-12-gc81bc9f.json')" class="button is-primary">Flash firmware</button>
 	</div>
@@ -57,12 +65,13 @@
 </body>
 
 <!-- external, permissive licenses -->
-<script src="js/cbor.js"></script>
-<script src="js/platform.js"></script>
-<script src="js/sha256.js"></script>
-<!--<script src="js/u2f-api.js"></script>-->
+<script src="js/vendor/cbor.js"></script>
+<script src="js/vendor/platform.js"></script>
+<script src="js/vendor/sha256.js"></script>
+<script src="js/vendor/intel-hex.js"></script>
  <!-- U2F support for Chrome; for Firefox need the about:config dance -->
-<script src="js/intel-hex.js"></script>
+<!--<script src="js/vendor/u2f-api.js"></script>-->
+
 <!-- our stuff -->
 <script src="js/constants.js"></script>
 <script src="js/helpers.js"></script>

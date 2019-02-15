@@ -1,11 +1,11 @@
 const CMD = {
-    sign: 0x10,
-    register: 0x11,
-    pin: 0x12,
-    reset: 0x13,
-    version: 0x14,
-    rng: 0x15,
-    pubkey: 0x16,
+    solo_sign: 0x10,
+    solo_register: 0x11,
+    solo_pin: 0x12,
+    solo_reset: 0x13,
+    solo_version: 0x14,
+    solo_rng: 0x15,
+    solo_pubkey: 0x16,
 
     boot_write: 0x40,   // 64
     boot_done: 0x41,    // 65

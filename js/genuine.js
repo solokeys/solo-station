@@ -26,9 +26,9 @@ async function check_version(){
     document.getElementById('errors').textContent = 'Checking firmware version, please wait...';
     document.getElementById('success-version').textContent = '';
 
-	await ctaphid_vendor_over_webauthn(CMD.version)
+	await ctaphid_vendor_over_webauthn(CMD.solo_version)
 	.then(response => {
-		console.log("IN THEN BRANCH FOR", CMD.version);
+		console.log("IN THEN BRANCH FOR", CMD.solo_version);
 		console.log("RESPONSE:", response);
 		let version_and_noise = response.data;
 		let formatted_version = version_and_noise[0] + '.' + version_and_noise[1] + '.' + version_and_noise[2];
@@ -38,7 +38,7 @@ async function check_version(){
 	}
 	)
 	.catch((error) => {
-		console.log("IN CATCH BRANCH FOR", CMD.version);
+		console.log("IN CATCH BRANCH FOR", CMD.solo_version);
 		console.log("CAUGHT:", error);
 		document.getElementById('errors').textContent = 'Your firmware is out of date.  Please update.';
 	});

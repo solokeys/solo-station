@@ -66,6 +66,8 @@ async function ctaphid_vendor_over_webauthn(cmd, addr, data) {
 	})
    .catch((error) => {
 		console.log("ERROR CALLING:", cmd, addr, data);
+		console.log("THE ERROR:", error);
+		return error;
 	})
 	;
 }
@@ -77,7 +79,11 @@ async function prepare_flash() {
 
     document.getElementById('flasherror').textContent = '';
 
-	ctaphid_vendor_over_webauthn(CMD.boot_check)
+	await ctaphid_vendor_over_webauthn(CMD.boot_check)
+	.then(response => {
+		reponse.data;
+		console.log("WHAT NOW");
+	})
 	.catch(error => {
         console.log("Make sure device is in bootloader mode.  Unplug, hold button, plug in, wait for flashing yellow light.");
         document.getElementById('flasherror').textContent = 'Make sure device is in bootloader mode.  Unplug, hold button, plug in, wait for flashing yellow light.';
@@ -96,11 +102,11 @@ async function prepare_flash() {
 
 async function generate_random() {
 	/*
-	let r = await ctaphid_vendor_over_webauthn(CMD.rng);
+	let r = await ctaphid_vendor_over_webauthn(CMD.solo_rng);
 	let hex_random = array2hex(r.data);
     document.getElementById('randomdata').textContent = hex_random.slice(64);
 	*/
-	ctaphid_vendor_over_webauthn(CMD.rng)
+	ctaphid_vendor_over_webauthn(CMD.solo_rng)
 	.then(response => {
 		let hex_random = array2hex(response.data);
 		document.getElementById('randomdata').textContent = hex_random.slice(64);
