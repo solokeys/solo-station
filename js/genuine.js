@@ -1,4 +1,4 @@
-function prepare_genuine() {
+async function prepare_genuine() {
     document.getElementById('success').textContent = '';
     document.getElementById('success-version').textContent = '';
     document.getElementById('errors').textContent = '';
@@ -18,30 +18,34 @@ function prepare_genuine() {
     } else {
         document.getElementById('success').textContent += 'Your browser supports WebAuthn';
     }
-	check_version();
+
+	await check_version();
 }
 
 async function check_version(){
     document.getElementById('errors').textContent = 'Checking firmware version, please wait...';
     document.getElementById('success-version').textContent = '';
-	let r = await ctaphid_vendor_over_webauthn(CMD.version);
-	let version_and_noise = r.data;
-    let formatted_version = version_and_noise[0] + '.' + version_and_noise[1] + '.' + version_and_noise[2];
-    console.log(formatted_version);
-	document.getElementById('errors').textContent = '';
-	if (formatted_version == '1.0.2')
-	{
+
+	await ctaphid_vendor_over_webauthn(CMD.version)
+	.then(response => {
+		console.log("IN THEN BRANCH FOR", CMD.version);
+		console.log("RESPONSE:", response);
+		let version_and_noise = response.data;
+		let formatted_version = version_and_noise[0] + '.' + version_and_noise[1] + '.' + version_and_noise[2];
+		console.log(formatted_version);
+		document.getElementById('errors').textContent = '';
 		document.getElementById('success-version').textContent = 'Firmware is up to date: ' + formatted_version;
 	}
-	else
-	{
-		document.getElementById('success').textContent += '.  Version: ' + formatted_version;
+	)
+	.catch((error) => {
+		console.log("IN CATCH BRANCH FOR", CMD.version);
+		console.log("CAUGHT:", error);
 		document.getElementById('errors').textContent = 'Your firmware is out of date.  Please update.';
-	}
+	});
 }
 
-function check() {
-    prepare_genuine();
+async function check() {
+    await prepare_genuine();
 
     // random nonce
     var challenge = new Uint8Array(32);
@@ -121,7 +125,7 @@ function check() {
             document.getElementById('errors').textContent = 'unknown key';
         }
 
-        check_version();
+        // check_version();
 
     })
     .catch(e => {

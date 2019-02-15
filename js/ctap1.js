@@ -18,7 +18,7 @@ function parse_device_response(arr)
 }
 
 function encode_ctap1_request_as_keyhandle(cmd, addr, data) {
-    console.log('REQUEST CMD', cmd);
+    console.log('REQUEST CMD', cmd, '(', command_codes[cmd], ')');
     console.log('REQUEST ADDR', addr);
     console.log('REQUEST DATA', data);
 

@@ -57,9 +57,17 @@ async function ctaphid_vendor_over_webauthn(cmd, addr, data) {
         timeout: 1000,
     }
 
-    var assertion = await navigator.credentials.get({publicKey: request_options});
-    return parse_ctaphid_vendor_over_webauthn_response(assertion.response);
-
+    return navigator.credentials.get({publicKey: request_options})
+	.then((assertion) => {
+		console.log("GOT ASSERTION", assertion);
+		let response = parse_ctaphid_vendor_over_webauthn_response(assertion.response);
+		console.log("RESPONSE:", response);
+		return response;
+	})
+   .catch((error) => {
+		console.log("ERROR CALLING:", cmd, addr, data);
+	})
+	;
 }
 
 async function prepare_flash() {
@@ -68,7 +76,13 @@ async function prepare_flash() {
     // }
 
     document.getElementById('flasherror').textContent = '';
-	let r = await ctaphid_vendor_over_webauthn(CMD.boot_check);
+
+	ctaphid_vendor_over_webauthn(CMD.boot_check)
+	.catch(error => {
+        console.log("Make sure device is in bootloader mode.  Unplug, hold button, plug in, wait for flashing yellow light.");
+        document.getElementById('flasherror').textContent = 'Make sure device is in bootloader mode.  Unplug, hold button, plug in, wait for flashing yellow light.';
+	});
+
 	/*
     var p = await is_bootloader();
     if (p.status != 'CTAP1_SUCCESS')
@@ -81,15 +95,25 @@ async function prepare_flash() {
 }
 
 async function generate_random() {
+	/*
 	let r = await ctaphid_vendor_over_webauthn(CMD.rng);
 	let hex_random = array2hex(r.data);
     document.getElementById('randomdata').textContent = hex_random.slice(64);
+	*/
+	ctaphid_vendor_over_webauthn(CMD.rng)
+	.then(response => {
+		let hex_random = array2hex(response.data);
+		document.getElementById('randomdata').textContent = hex_random.slice(64);
+	})
+	.catch(error => {
+		document.getElementById('randomdata').textContent = 'Unable to get any random data.';
+	});
 }
 
 async function flash_firmware(file_url) {
     // e.g.: "https://genuine.solokeys.com/hex/example-solo.json"
 
-    // await prepare_flash();
+    await prepare_flash();
 
     let signed_hex = await get_url_json(file_url);
     console.log("SIGNED HEX", signed_hex);

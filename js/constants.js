@@ -14,6 +14,13 @@ const CMD = {
     boot_version: 0x44, // 68
 };
 
+const command_codes = {
+	0x14: "VERSION",
+	0x15: "RNG",
+	0x42: "BOOT.CHECK",
+	0x44: "BOOT.VERSION",
+};
+
 const ctap_error_codes = {
     0x00: 'CTAP1_SUCCESS',
     0x01: 'CTAP1_ERR_INVALID_COMMAND',
